@@ -1,0 +1,17 @@
+# Generated Plugin YAML file
+schema_version: "v1"
+name_for_human: "AWS Price List Plugin"
+name_for_model: "aws_price_list"
+description_for_human: "Plugin for retrieving AWS pricing information."
+description_for_model: "Plugin for retrieving AWS pricing information."
+auth:
+  type: "api_key"
+  api_key_header: "x-api-key"
+  api_key_query_param: ""
+api:
+  type: "openapi"
+  url: "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonS3/current/index.json"
+  is_user_authenticated: false
+logo_url: "https://aws.amazon.com/favicon.ico"
+contact_email: "support@aws.com"
+legal_info_url: "https://aws.amazon.com/legal"
