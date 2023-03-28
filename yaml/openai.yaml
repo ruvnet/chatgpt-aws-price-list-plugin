@@ -1,0 +1,342 @@
+openapi: 3.0.1
+info:
+  title: AWS Price List API
+  description: An API for retrieving pricing information from the AWS Price List API.
+  version: 'v1'
+servers:
+  - url: https://pricing.us-east-1.amazonaws.com
+paths:
+  /offers/v1.0/aws/index.json:
+    get:
+      operationId: getOfferIndex
+      summary: Get the index of all available AWS pricing offers.
+      parameters:
+        - in: query
+          name: format
+          description: The format of the response. The AWS Price List API supports both JSON and CSV formats.
+          required: false
+          schema:
+            type: string
+            enum: [json, csv]
+        - in: query
+          name: filter
+          description: A filter expression that can be used to filter the results returned by the API based on various criteria, such as product family, region, and pricing unit.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: region
+          description: The AWS region for which to retrieve pricing information.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: usagetype
+          description: The usage type for which to retrieve pricing information, such as "DataTransfer-Out-Bytes" or "EBS:VolumeUsage.gp2".
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getOfferIndexResponse'
+  /offers/v1.0/aws/{offer_code}/current/index.json:
+    get:
+      operationId: getPriceList
+      summary: Get the current pricing information for the specified AWS offer.
+      parameters:
+        - in: path
+          name: offer_code
+          description: The code of the AWS pricing offer to retrieve (e.g. AmazonS3, AmazonEC2).
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: format
+          description: The format of the response. The AWS Price List API supports both JSON and CSV formats.
+          required: false
+          schema:
+            type: string
+            enum: [json, csv]
+        - in: query
+          name: filter
+          description: A filter expression that can be used to filter the results returned by the API based on various criteria, such as product family, region, and pricing unit.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: region
+          description: The AWS region for which to retrieve pricing information.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: usagetype
+          description: The usage type for which to retrieve pricing information, such as "DataTransfer-Out-Bytes" or "EBS:VolumeUsage.gp2".
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPriceListResponse'
+  /offers/v1.0/aws/{offer_code}/{version_index}/index.json:
+    get:
+      operationId: getOfferVersionIndex
+      summary: Get the index of all available versions of a specific AWS pricing offer.
+      parameters:
+        - in: path
+          name: offer_code
+          description: The code of the AWS pricing offer to retrieve (e.g. AmazonS3, AmazonEC2).
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: version_index
+          description: The index of the version of the AWS pricing offer to retrieve.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: format
+          description: The format of the response. The AWS Price List API supports both JSON and CSV formats.
+          required: false
+          schema:
+            type: string
+            enum: [json, csv]
+        - in: query
+          name: filter
+          description: A filter expression that can be used to filter the results returned by the API based on various criteria, such as product family, region, and pricing unit.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: region
+          description: The AWS region for which to retrieve pricing information.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: usagetype
+          description: The usage type for which to retrieve pricing information, such as "DataTransfer-Out-Bytes" or "EBS:VolumeUsage.gp2".
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getOfferVersionIndexResponse'
+components:
+  schemas:
+    getOfferIndexResponse:
+      type: object
+      properties:
+        formatVersion:
+          type: string
+        disclaimer:
+          type: string
+        publications:
+          type: array
+          items:
+            type: object
+            properties:
+              offerCode:
+                type: string
+              versionIndexUrl:
+                type: string
+              currentVersionUrl:
+                type: string
+              publicationOfferCode:
+                type: string
+              effectiveDate:
+                type: string
+              offerings:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    offerArn:
+                      type: string
+                    sku:
+                      type: string
+                    versionIndexUrl:
+                      type: string
+                    currentVersionUrl:
+                      type: string
+                    termAttributes:
+                      type: object
+    getPriceListResponse:
+      type: object
+      properties:
+        formatVersion:
+          type: string
+        disclaimer:
+          type: string
+        publicationDate:
+          type: string
+        offers:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              version:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    sku:
+                      type: string
+                    attributes:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    terms:
+                      type: object
+                      additionalProperties:
+                        type: object
+                        properties:
+                          termAttributes:
+                            type: object
+                            additionalProperties:
+                              type: string
+                          priceDimensions:
+                            type: object
+                            additionalProperties:
+                              type: object
+                              properties:
+                                description:
+                                  type: string
+                                beginRange:
+                                  type: string
+                                endRange:
+                                  type: string
+                                unit:
+                                  type: string
+                                pricePerUnit:
+                                  type: object
+                                  properties:
+                                    USD:
+                                      type: string
+    getOfferVersionIndexResponse:
+      type: object
+      properties:
+        formatVersion:
+          type: string
+        disclaimer:
+          type: string
+        publications:
+          type: array
+          items:
+            type: object
+            properties:
+              offerCode:
+                type: string
+              currentVersionUrl:
+                type: string
+              versionIndexUrl:
+                type: string
+              effectiveDate:
+                type: string
+              publicationOffers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    offerCode:
+                      type: string
+                    versionIndexUrl:
+                      type: string
+                    currentVersionUrl:
+                      type: string
+                    publicationOfferCode:
+                      type: string
+                    effectiveDate:
+                      type: string
+    getFilterValuesResponse:
+      type: object
+      properties:
+        formatVersion:
+          type: string
+        disclaimer:
+          type: string
+        offerCode:
+          type: string
+        filterName:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+    getAttributeValuesResponse:
+      type: object
+      properties:
+        formatVersion:
+          type: string
+        disclaimer:
+          type: string
+        offerCode:
+          type: string
+        attributeName:
+          type: string
+        attributeValues:
+          type: array
+          items:
+            type: string
+    getProductsResponse:
+      type: object
+      properties:
+        formatVersion:
+          type: string
+        disclaimer:
+          type: string
+        publicationDate:
+          type: string
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              sku:
+                type: string
+              productFamily:
+                type: string
+              attributes:
+                type: object
+                additionalProperties:
+                  type: string
+              terms:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    termAttributes:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    priceDimensions:
+                      type: object
+                      additionalProperties:
+                        type: object
+                        properties:
+                          description:
+                            type: string
+                          beginRange:
+                            type: string
+                          endRange:
+                            type: string
+                          unit:
+                            type: string
+                          pricePerUnit:
+                            type: object
+                            properties:
+                              USD:
+                                type: string
